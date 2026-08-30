@@ -68,6 +68,16 @@ Each phase has a clear entry criteria, defined interactions between agents, and 
 - **Full audit trail** — Every meeting, discussion, decision, and deliverable is recorded with timestamps
 - **Graceful degradation** — LLM failures produce fallback responses; the simulation continues
 
+## Screenshots
+
+![Dashboard](frontend/screenshots/01-dashboard.jpg)
+
+![Projects](frontend/screenshots/02-projects.jpg)
+
+![Weekly Report](frontend/screenshots/03-reports.jpg)
+
+![AI Insights](frontend/screenshots/04-insights.jpg)
+
 ## Quick Start
 
 ### Prerequisites
