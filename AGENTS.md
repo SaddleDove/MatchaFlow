@@ -1,51 +1,61 @@
-## 项目概述
+## Project Overview
 
-多智能体项目管理模拟系统（Multi-Agent Project Management Simulation System）。基于 LLM 的多 Agent 系统，模拟完整软件项目管理流程：项目发起人、项目经理、项目组成员三个角色，经历预启动、启动、计划、执行、控制、结束六个阶段，产出项目章程、WBS、代码、挣值分析等交付物。
+Multi-Agent Project Management Simulation System with a web frontend. The backend uses LLM-based multi-agent simulation (Sponsor, Manager, Team Member) across six project phases. The frontend is a Linear-inspired dark-themed dashboard providing AI-powered project management: task decomposition, risk warnings, weekly reports, and resource allocation suggestions.
 
-## 技术栈
+## Tech Stack
 
-- **语言**：Python 3.12
-- **包管理**：uv（项目级虚拟环境）
-- **依赖**：openai>=1.0.0, requests>=2.28.0, python-dateutil>=2.8.0
-- **LLM 接口**：OpenAI 兼容 API（通过 config.py 配置 base_url / api_key / model）
+- **Backend**: Python 3.12, FastAPI, Uvicorn
+- **Frontend**: React 19, TypeScript, Vite 6, Tailwind CSS v4, Zustand, React Router v7, Lucide Icons
+- **Package Manager**: pnpm (frontend), pip/venv (backend)
+- **LLM Interface**: OpenAI-compatible API (config.py)
+- **Design**: Dark minimalist, Inter + JetBrains Mono fonts, AI accent color (violet)
 
-## 目录结构
+## Directory Structure
 
 ```
-├── agents/              # Agent 模块（base_agent, sponsor, manager, team_member）
-├── database/            # 共享数据库（shared_db.py）
-├── workflow/            # 工作流引擎（engine.py）
-├── utils/               # 工具模块（llm_client.py, document_generator.py）
-├── tests/               # 测试套件（test_all.py，86 个测试）
-├── simulation/          # 模拟结果存储目录
-├── config.py            # 配置（LLM、阶段定义、Agent 提示词）
-├── main.py              # 主程序入口
-├── test_simple.py       # 快速冒烟测试
-├── requirements.txt     # 依赖声明
-├── README.md            # 英文文档（主入口）
-├── README.zh-CN.md      # 中文文档
-└── TEST_REPORT.md       # 完整测试报告
+├── frontend/            # Vite + React SPA
+│   ├── src/
+│   │   ├── components/  # UI components (layout, dashboard, kanban, ai)
+│   │   ├── pages/       # DashboardPage, ProjectsPage, AIInsightsPage, WeeklyReportPage
+│   │   ├── lib/         # store (Zustand), utils, mock-data, api client
+│   │   └── types/       # TypeScript type definitions
+│   └── dist/            # Built frontend (served by FastAPI)
+├── api/                 # FastAPI backend
+│   ├── main.py          # App entry, serves API + static frontend
+│   └── routes.py        # REST endpoints (projects, tasks, members, risks, insights, reports)
+├── agents/              # Agent modules (base_agent, sponsor, manager, team_member)
+├── database/            # Shared database (shared_db.py)
+├── workflow/            # Workflow engine (engine.py)
+├── utils/               # Utilities (llm_client.py, document_generator.py)
+├── scripts/             # Build & run scripts for preview/deploy
+├── config.py            # LLM config & agent prompt templates
+├── main.py              # CLI entry point
+├── DESIGN.md            # Design system specification
+└── .coze                # Project configuration
 ```
 
-## 关键入口 / 核心模块
+## Key Entry Points
 
-- **main.py**：CLI 入口，支持 `--project-idea` 和 `--project-code` 参数
-- **workflow/engine.py**：工作流引擎，驱动六阶段流转
-- **agents/**：三个角色 Agent 的实现
-- **config.py**：LLM 配置与 Agent 提示词模板（需配置真实 API 信息后方可运行）
+- **Frontend**: `frontend/src/main.tsx` → React SPA with 4 pages
+- **Backend API**: `api/main.py` → FastAPI on port 5000, serves API + built frontend
+- **CLI**: `main.py --project-idea "..."` → Original CLI simulation tool
+- **API Routes**: `/api/projects`, `/api/tasks`, `/api/members`, `/api/risks`, `/api/insights`, `/api/reports`
 
-## 运行与预览
+## Running & Preview
 
-- 本项目为 CLI 工具，非预览型产物，`preview_enable = "disabled"`
-- 运行方式：`python main.py --project-idea "项目描述"`
-- 需先在 config.py 中配置有效的 LLM API 信息
+- **Preview**: `bash scripts/build.sh && bash scripts/run.sh` → starts FastAPI on port 5000
+- **Frontend dev**: `cd frontend && pnpm dev` → Vite dev server with HMR (proxies /api to :8000)
+- **CLI mode**: `python main.py --project-idea "description"` (requires LLM config in config.py)
 
-## 用户偏好与长期约束
+## User Preferences & Constraints
 
-- 使用 uv 管理 Python 虚拟环境和依赖
-- 禁止使用 npm/yarn
+- pnpm for Node.js, pip/venv for Python
+- All UI text in English
+- Dark theme only, no light mode
+- AI features are advisory — suggestions, not automated actions
 
-## 常见问题和预防
+## Common Issues
 
-- config.py 中 LLM_CONFIG 默认为占位值，运行前需替换为真实 API 配置
-- MAX_EXECUTION_CYCLES 建议 ≥5，前两次循环为 review-only 模式
+- `config.py` LLM_CONFIG has placeholder values — replace before running CLI simulation
+- Frontend uses mock data by default; API integration requires running FastAPI backend
+- Port 5000 must be free before starting preview; run script auto-kills stale processes

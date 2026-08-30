@@ -38,6 +38,12 @@ wheels/
 .DS_Store
 Thumbs.db
 
+# Preview
+.preview
+
+# Node
+node_modules/
+
 # Logs
 *.log
 
@@ -45,3 +51,10 @@ Thumbs.db
 *.tmp
 *.temp
 dao/simulation/
+
+# Frontend build artifacts
+frontend/dist/
+frontend/node_modules/
+
+# Local smoke test
+.smoke/
